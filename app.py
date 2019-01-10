@@ -1,14 +1,19 @@
-import datetime
-import os
-import re
+import tornado.ioloop
+import tornado.web
 
-from peewee import *
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, world")
 
-db = SqliteDatabase('people.db')
+def make_app():
+    return tornado.web.Application([
+        (r"/", MainHandler),
+    ])
 
-class Person(Model):
-    name = CharField()
-    birthday = DateField()
+def main():
+    app = make_app()
+    app.listen(8888)
+    tornado.ioloop.IOLoop.current().start()
 
-    class Meta:
-        database = db # This model uses the "people.db" database.
+if __name__ == "__main__":
+    main()
