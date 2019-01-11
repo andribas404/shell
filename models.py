@@ -1,15 +1,15 @@
 import datetime
-import os
-import re
 
-from peewee import *
+import asyncio
+import peewee
+import peewee_async
 
 DATABASE_FILENAME = 'people.db'
-database = SqliteDatabase(DATABASE_FILENAME)
+database = peewee.SqliteDatabase(DATABASE_FILENAME)
 
-class Person(Model):
-    name = CharField()
-    birthday = DateField()
+class Person(peewee.Model):
+    name = peewee.CharField()
+    birthday = peewee.DateField()
 
     class Meta:
         database = database # This model uses the "people.db" database.
