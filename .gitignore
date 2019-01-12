@@ -1,3 +1,5 @@
 .vscode
 __pycache__
+*.ipynb
+.ipynb-checkpoints
 person.csv

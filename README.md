@@ -23,3 +23,10 @@ simple tornado service
 
 Нельзя использовать django, вместо него используем tornado.
 В качестве frontend'а одна страница на jQuery или Vue (предпочтительней).
+
+TODO:
+test
+rest api
+vue
+templates
+validation
