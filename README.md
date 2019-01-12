@@ -26,7 +26,7 @@ simple tornado service
 
 TODO:
 test
-rest api
++ rest api
 vue
 templates
 validation

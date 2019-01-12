@@ -102,7 +102,7 @@ class CrudHandler(tornado.web.RequestHandler):
         if not item_id:
             if not action:
                 #POST    {prefix}            добавляет новый элемент
-                self.add_item()
+                self.create_item()
             else:
                 self.error404()
         else:

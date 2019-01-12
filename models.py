@@ -1,7 +1,8 @@
 import datetime
 import logging
 
-from peewee import *
+from peewee import SqliteDatabase, Model, IntegrityError
+from peewee import CharField, IntegerField, DateField, ForeignKeyField, BooleanField
 from playhouse.shortcuts import model_to_dict, dict_to_model
 
 DATABASE_FILENAME = 'shell.db'
