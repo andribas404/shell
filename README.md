@@ -35,3 +35,4 @@ CSRF
 logging
 documentation
 merge with vue
+add app icon, link to github
