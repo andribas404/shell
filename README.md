@@ -30,11 +30,9 @@
   * tornado testcase,
   * pytest,
   * coverage
-+ rest api
 + vue
 - validation (валидация на сервере, экранирование)
 - CSRF
 - журналирование
 - документация (сгенерировать по doc классов)
 - merge with vue
-- deploy script
