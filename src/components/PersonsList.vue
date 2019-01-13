@@ -15,6 +15,9 @@
         Список сотрудников пуст.
       </p>
 
+      <v-btn color="red" dark fab bottom left fixed @click="$vuetify.goTo(0, { duration: 500, offset: 0 })">
+          <v-icon>keyboard_arrow_up</v-icon>
+      </v-btn>
       <v-btn color="pink" dark fab bottom right fixed @click="addItem">
           <v-icon>add</v-icon>
       </v-btn>

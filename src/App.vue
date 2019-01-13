@@ -9,10 +9,13 @@
       <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-btn icon>
-          <v-icon>search</v-icon>
+          <v-icon>notifications_none</v-icon>
         </v-btn>
         <v-btn icon>
-          <v-icon>view_module</v-icon>
+          <v-icon>widgets</v-icon>
+        </v-btn>
+        <v-btn icon href="https://github.com/andribas404/shell" target="_blank">
+          <img height="32" width="32" src="/github.svg" />
         </v-btn>
       </v-toolbar>
 

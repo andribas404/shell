@@ -1,6 +1,6 @@
 <template>
-    <v-list-tile avatar @click="">
-        <v-list-tile-avatar @click="$emit('edit', item.id)">
+    <v-list-tile avatar @click="$emit('edit', item.id)">
+        <v-list-tile-avatar>
             <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
@@ -8,8 +8,8 @@
             <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
-            <v-btn icon @click="$emit('archive', item.id)">
-                <v-icon color="grey lighten-1">info</v-icon>
+            <v-btn icon v-on:click.stop="$emit('archive', item.id)">
+                <v-icon color="grey lighten-1">star_border</v-icon>
             </v-btn>
         </v-list-tile-action>
     </v-list-tile>
