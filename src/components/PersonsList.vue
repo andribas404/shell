@@ -203,7 +203,7 @@ export default {
   },
   created: function () {
     // Fetch our array from an API
-    console.log(this.$http.options.root)
+    var vm = this
     this.$http.get('person').then(response => {
         // success callback
         var data = response.body
@@ -211,10 +211,10 @@ export default {
         var len = data.length
         for (var i = 0; i < len; i++) {
             var item = data[i]
-            var new_item = this.transformItem(item)
+            var new_item = vm.transformItem(item)
             arr.push(new_item)
         }        
-        this.items = arr
+        vm.items = arr
     }, response => {
         // error callback
     })            
