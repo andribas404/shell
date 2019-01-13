@@ -203,18 +203,18 @@ export default {
   },
   created: function () {
     // Fetch our array from an API
-    var vm = this
     this.$http.get('person').then(response => {
         // success callback
+        console.log('test', this.$http.options.root, response.body)
         var data = response.body
         var arr = []
         var len = data.length
         for (var i = 0; i < len; i++) {
             var item = data[i]
-            var new_item = vm.transformItem(item)
+            var new_item = this.transformItem(item)
             arr.push(new_item)
         }        
-        vm.items = arr
+        this.items = arr
     }, response => {
         // error callback
     })            

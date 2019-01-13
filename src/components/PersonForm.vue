@@ -183,9 +183,6 @@
         },
     },
     created: function () {
-        // Alias the component instance as `vm`, so that we  
-        // can access it inside the promise function
-        var vm = this
         this.$http.get('dpt').then(response => {
             // success callback
             var data = response.body
@@ -197,7 +194,7 @@
                     value: data[i].id,
                 })
             }        
-            vm.dpt_items = arr
+            this.dpt_items = arr
         }, response => {
             // error callback
         })            
