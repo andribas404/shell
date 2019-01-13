@@ -63,14 +63,15 @@ yarn run lint
     - подтверждение удаления - модальное окно
 
     - прописать:
-```
-Form:
-    create
-    save
-PersonsList:
-    removeItem (id)
-    archiveItem (id)
-```
+    ```
+    Form:
+        create
+        save
+    PersonsList:
+        removeItem (id)
+        archiveItem (id)
+    ```
+
     - сделать фильтр по архиву в меню
     - после нажатия кнопки архив менять ее цвет (активно / не активно)
     - после изменения элемента (успешного редактирования) обновлять его в списке
