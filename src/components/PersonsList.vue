@@ -202,7 +202,8 @@ export default {
     },
   },
   created: function () {
-    // Fetch our array of dpts from an API
+    // Fetch our array from an API
+    console.log(this.$http.options.root)
     this.$http.get('person').then(response => {
         // success callback
         var data = response.body
