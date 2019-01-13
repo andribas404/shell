@@ -25,8 +25,13 @@ simple tornado service
 В качестве frontend'а одна страница на jQuery или Vue (предпочтительней).
 
 TODO:
-test
+test - selenium?, tornado testcase, pytest, coverage
 + rest api
-vue
-templates
-validation
++ vue
+- templates (убрать лишнее)
+- validation (валидация на клиенте, записываем любые данные)
+проверка escape при записи - экранирование?
+CSRF
+logging
+documentation
+merge with vue
