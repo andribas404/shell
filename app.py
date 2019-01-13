@@ -14,8 +14,8 @@ from models import OutdatedError
 def json_serialize(obj):
     return json.dumps(obj, indent=2, sort_keys=True, default=str, ensure_ascii=False).encode('utf8')
 
-
-define("port", default=8000, help="run on the given port", type=int)
+# define a port for serving requests. Heroku uses 5000
+define("port", default=5000, help="run on the given port", type=int)
 
 
 class Application(tornado.web.Application):
@@ -47,13 +47,19 @@ class Application(tornado.web.Application):
             for r in all_routes] + [('/', MainHandler), ('/api/dpt', DptHandler)]
 
 
-class MainHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+    def set_default_headers(self, *args, **kwargs):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+
+class MainHandler(BaseHandler):
     """Отображает главную страницу"""
     def get(self):
         items = ItemList.get_index()
         self.render('index.html', items=items)
 
-class DptHandler(tornado.web.RequestHandler):
+class DptHandler(BaseHandler):
     """возвращает список отделов"""
     def get(self):
         self.set_header('Content-Type', 'application/json')
@@ -62,7 +68,7 @@ class DptHandler(tornado.web.RequestHandler):
         self.write(response)
 
 
-class CrudHandler(tornado.web.RequestHandler):
+class CrudHandler(BaseHandler):
     """
     метод   путь                комментарий
     GET     {prefix}            отображает список элементов
