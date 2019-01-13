@@ -24,15 +24,57 @@
 
 В качестве frontend'а одна страница на jQuery или Vue (предпочтительней).
 
+### Project setup
+```
+yarn install
+```
+
+#### Compiles and hot-reloads for development
+```
+yarn run serve
+```
+
+#### Compiles and minifies for production
+```
+yarn run build
+```
+
+#### Run your tests
+```
+yarn run test
+```
+
+#### Lints and fixes files
+```
+yarn run lint
+```
+
 ## TODO:
 - test
   * selenium,
   * tornado testcase,
   * pytest,
   * coverage
-+ vue
 - validation (валидация на сервере, экранирование)
 - CSRF
 - журналирование
 - документация (сгенерировать по doc классов)
-- merge with vue
+- фронтенд:
+    - подтверждение удаления - модальное окно
+
+    - прописать:
+```
+Form:
+    create
+    save
+PersonsList:
+    removeItem (id)
+    archiveItem (id)
+```
+    - сделать фильтр по архиву в меню
+    - после нажатия кнопки архив менять ее цвет (активно / не активно)
+    - после изменения элемента (успешного редактирования) обновлять его в списке
+
+    - компоненты:
+        - добавить snackbar - отображать уведомления после обращений на сервер
+        - url = localhost - изменить на относительный путь

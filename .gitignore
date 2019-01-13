@@ -1,5 +1,17 @@
+.DS_Store
+node_modules
+
+# Log files
+yarn-debug.log*
+yarn-error.log*
+
+#ide
 .vscode
-__pycache__
 *.ipynb
 .ipynb-checkpoints
+
+#python
+__pycache__
+
+#personal data
 person.csv
