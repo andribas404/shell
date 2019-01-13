@@ -9,7 +9,18 @@
         </v-list-tile-content>
         <v-list-tile-action>
             <v-btn icon v-on:click.stop="$emit('archive', item.id)">
-                <v-icon color="grey lighten-1">star_border</v-icon>
+                <v-icon
+                v-if="item.is_archive"
+                color="grey lighten-1"
+                >
+                star_border
+                </v-icon>
+                <v-icon
+                v-else
+                color="yellow darken-2"
+                >
+                star
+                </v-icon>            
             </v-btn>
         </v-list-tile-action>
     </v-list-tile>

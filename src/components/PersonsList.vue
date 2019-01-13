@@ -31,6 +31,8 @@
         @update="updateItem"
         @remove="removeItem"
         ref="edit_form"/>
+      <Notice
+        ref="snack"/>
     </v-layout>
   </v-container>
 </template>
@@ -38,10 +40,11 @@
 <script>
 import ListItem from './ListItem'
 import PersonForm from './PersonForm'
+import Notice from './Notice'
 
 export default {
   components: {
-    ListItem, PersonForm
+    ListItem, PersonForm, Notice
   },
   data: () => ({
     items: [],
@@ -54,12 +57,15 @@ export default {
       this.$refs.edit_form.set(id)
       this.$refs.edit_form.show()
     },
-    getFormData (item) {
+    getFormData (item, reverse_birthday=true) {
       var formData = new FormData()
       for (const key of Object.keys(item)) {
-          const val = item[key];
+          var val = item[key]
+          if (reverse_birthday & key === 'birthday') {
+            val = val.split('.').reverse().join('-')
+          }
           // use key, val
-          formData.append(key, val);
+          formData.append(key, val)
       }
       return formData
     },
@@ -83,6 +89,36 @@ export default {
     },
     archiveToggleItem (id) {
       console.log('archiveToggleItem', id)
+      var url = 'person/' + id
+      this.$http.get(url).then(response => {
+        // success callback
+        var item = response.body
+        item.dpt = item.dpt.id
+
+        item.is_archive = !item.is_archive
+        this.archivePostItem(item)
+      }, response => {
+          // error callback
+      })
+    },
+    archivePostItem (item) {
+      var url = 'person/' + item.id
+      var dst = 'из архива'
+      if (item.is_archive) {
+        dst = 'в архив'
+      }
+      var formData = this.getFormData(item, false)
+      // POST url
+      this.$http.post(url, formData).then(response => {
+        // success callback
+        var notice = 'Сотрудник ' + name + ' перемещен ' + dst
+        this.showNotice('success', notice)
+        this.refreshItem(item)
+      }, response => {
+        // error callback
+        var notice = 'Ошибка перемещения сотрудника ' + name + ' ' + dst + '. Причина: ' + response.body.message
+        this.showNotice('error', notice)
+      })      
     },
     createItem (item) {
       var formData = this.getFormData(item)
@@ -139,6 +175,7 @@ export default {
     },
     showNotice (status, message) {
       console.log('showNotice', status, message)
+      this.$refs.snack.show(status, message)
     },
     refreshItem (item) {
       console.log('refreshItem', item)
@@ -173,9 +210,6 @@ export default {
         var len = data.length
         for (var i = 0; i < len; i++) {
             var item = data[i]
-            var title = this.getName(item)
-            var bday = item.birthday.split('-').reverse().join('.')
-            var subtitle = ['Дата рождения:', bday].join(' ')
             var new_item = this.transformItem(item)
             arr.push(new_item)
         }        

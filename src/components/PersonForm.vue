@@ -67,6 +67,7 @@
                 <v-text-field
                     v-model="item.birthday"
                     :rules="fieldRules"
+                    mask="##.##.####"
                     label="Дата рождения"
                     required
                 ></v-text-field>
@@ -99,7 +100,7 @@
             </v-flex>
     
             <v-flex xs12 md4 v-if="edit_mode">
-                <v-btn dark color="red" @click="$emit('remove', item)">
+                <v-btn dark color="red" @click="confirm">
                     <v-icon>delete</v-icon> Удалить
                 </v-btn>
             </v-flex>
@@ -109,18 +110,29 @@
         </v-form>
 
     </v-card>
+      <Confirmation
+        :dialog="confirm_dialog"
+        @confirm="confirmed"
+        ref="confirm"/>
+
 </v-dialog>
 
 </template>
 
 <script>
+  import Confirmation from './Confirmation'
+
   export default {
+    components: {
+        Confirmation
+    },
     props: {
         edit_mode: {
             type: Boolean,
         },
     },
     data: () => ({
+    confirm_dialog: false,
     dialog: false,
     valid: false,
     item: {
@@ -145,14 +157,13 @@
     }),
     methods: {
         set (id) {
-            var vm = this
             var url = 'person/' + id
             this.$http.get(url).then(response => {
                 // success callback
                 var data = response.body
-                vm.item = data
-                vm.item.dpt = data.dpt.id
-                vm.item.birthday = data.birthday.split('-').reverse().join('.')
+                this.item = data
+                this.item.dpt = data.dpt.id
+                this.item.birthday = data.birthday.split('-').reverse().join('.')
             }, response => {
                 // error callback
             })
@@ -162,6 +173,13 @@
         },
 	    close () {
           this.dialog = false
+        },
+        confirm () {
+          this.$refs.confirm.show()
+        },
+        confirmed () {
+          this.$refs.confirm.show(false)
+          this.$emit('remove', this.item)
         },
     },
     created: function () {

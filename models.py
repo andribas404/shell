@@ -137,6 +137,8 @@ class ItemList:
         try:
             fields = 'first_name second_name last_name birthday sex position dpt is_archive'.split()
             d = {key:item[key] for key in fields if key in item}
+            if 'is_archive' in d:
+                d['is_archive'] = True if d['is_archive'] == 'true' else False
             p = Person.create(**d)
             return model_to_dict(p)
         except IntegrityError as err:
@@ -163,6 +165,9 @@ class ItemList:
     def update(id, item):
         """обновляет значение полей элемента с заданным id"""
         try:
+            if 'is_archive' in item:
+                item['is_archive'] = True if item['is_archive'] == 'true' else False
+
             p = Person.get_by_id(id)
             for key,v in item.items():
                 if getattr(p, key) != v: 
