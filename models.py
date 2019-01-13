@@ -48,7 +48,7 @@ class BaseVersionedModel(Model):
             raise OutdatedError()
         else:
             # Increment local version to match what is now in the db.
-            self.version += 1
+            self.version = int(self.version) + 1
             return True
 
     class Meta:

@@ -8,7 +8,7 @@
           :key="item.id"
           :item="item"
           @edit="editItem"
-          @archive="archiveItem"
+          @archive="archiveToggleItem"
         />
       </v-list>
       <p v-else>
@@ -45,31 +45,123 @@ export default {
   }),
   methods: {
 		addItem () {
-      console.log('add')
       this.$refs.add_form.show()
     },
     editItem (id) {
-      console.log('edit', id)
       this.$refs.edit_form.set(id)
       this.$refs.edit_form.show()
     },
-    removeItem (id) {
-      console.log('remove', id)
+    getFormData (item) {
+      var formData = new FormData()
+      for (const key of Object.keys(item)) {
+          const val = item[key];
+          // use key, val
+          formData.append(key, val);
+      }
+      return formData
     },
-    archiveItem (id) {
-      console.log('archive', id)
+    removeItem (item) {
+      var url = 'person/' + item.id + '/delete'
+      var formData = this.getFormData({id: item.id})
+      var name = this.getName(item)
+      // POST url
+      this.$http.post(url, formData).then(response => {
+        // success callback
+        var notice = 'Сотрудник ' + name + ' удален'
+
+        this.$refs.edit_form.show(false)
+        this.popItem(item)
+        this.showNotice('success', notice)
+      }, response => {
+        // error callback
+        var notice = 'Ошибка сохранения сотрудника ' + name + '. Причина: ' + response.body.message
+        this.showNotice('error', notice)
+      });      
+    },
+    archiveToggleItem (id) {
+      console.log('archiveToggleItem', id)
     },
     createItem (item) {
-      console.log('createItem', item)
+      var formData = this.getFormData(item)
+      var url = 'person'
+      // POST url
+      this.$http.post(url, formData).then(response => {
+        // success callback
+        var new_item = response.body
+        var name = this.getName(new_item)
+        var notice = 'Сотрудник ' + name + ' успешно создан'
+
+        this.$refs.add_form.show(false)
+        this.appendItem(new_item)
+        this.showNotice('success', notice)
+      }, response => {
+        // error callback
+        var notice = 'Ошибка создания сотрудника ' + name + '. Причина: ' + response.body.message
+        this.showNotice('error', notice)
+      });      
     },
     updateItem (item) {
-      console.log('updateItem', item)
+      var url = 'person/' + item.id
+      var formData = this.getFormData(item)
+      var name = this.getName(item)
+      // POST url
+      this.$http.post(url, formData).then(response => {
+        // success callback
+        var notice = 'Сотрудник ' + name + ' успешно сохранен'
+
+        this.$refs.edit_form.show(false)
+        this.refreshItem(item)
+        this.showNotice('success', notice)
+      }, response => {
+        // error callback
+        var notice = 'Ошибка сохранения сотрудника ' + name + '. Причина: ' + response.body.message
+        this.showNotice('error', notice)
+      });      
+    },
+    getName (item) {
+      return [item.first_name, item.second_name, item.last_name].join(' ')
+    },
+    transformItem (item) {
+      var title = this.getName(item)
+      var bday = item.birthday.split('-').reverse().join('.')
+      var subtitle = ['Дата рождения:', bday].join(' ')
+      return {
+                icon: 'person',
+                iconClass: 'blue white--text',
+                title: title,
+                subtitle: subtitle,
+                is_archive: item.is_archive,
+                id: item.id,
+              }
+    },
+    showNotice (status, message) {
+      console.log('showNotice', status, message)
+    },
+    refreshItem (item) {
+      console.log('refreshItem', item)
+      var ind = this.items.findIndex(x => x.id === item.id)
+      if (ind === -1) {
+        console.log('IndexError')
+      } else {
+        this.$set(this.items, ind, this.transformItem(item))
+      }
+    },
+    appendItem (item) {
+      console.log('appendItem', item)
+      var new_item = this.transformItem(item)
+      this.items.push(new_item)
+    },
+    popItem (item) {
+      console.log('popItem', item)
+      var ind = this.items.findIndex(x => x.id === item.id)
+      if (ind === -1) {
+        console.log('IndexError')
+      } else {
+        this.items.splice(ind, 1)
+      }
     },
   },
   created: function () {
-    // Alias the component instance as `vm`, so that we  
-    // can access it inside the promise function
-    var vm = this
     // Fetch our array of dpts from an API
     this.$http.get('person').then(response => {
         // success callback
@@ -78,18 +170,13 @@ export default {
         var len = data.length
         for (var i = 0; i < len; i++) {
             var item = data[i]
-            var title = [item.first_name, item.second_name, item.last_name].join(' ')
+            var title = this.getName(item)
             var bday = item.birthday.split('-').reverse().join('.')
             var subtitle = ['Дата рождения:', bday].join(' ')
-            arr.push({
-                icon: 'person',
-                iconClass: 'blue white--text',
-                title: title,
-                subtitle: subtitle,
-                id: data[i].id,
-            })
+            var new_item = this.transformItem(item)
+            arr.push(new_item)
         }        
-        vm.items = arr
+        this.items = arr
     }, response => {
         // error callback
     })            

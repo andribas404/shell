@@ -65,15 +65,11 @@ yarn run lint
     - прописать:
     ```
     PersonsList:
-        removeItem (id)
-        archiveItem (id)
-        createItem (item)
-        updateItem (item)
+        archiveItem (id) - toggle computed property, update model
     ```
 
     - сделать фильтр по архиву в меню
     - после нажатия кнопки архив менять ее цвет (активно / не активно)
-    - после изменения элемента (успешного редактирования) обновлять его в списке
 
     - компоненты:
         - добавить snackbar - отображать уведомления после обращений на сервер

@@ -99,7 +99,7 @@
             </v-flex>
     
             <v-flex xs12 md4 v-if="edit_mode">
-                <v-btn dark color="red" @click="$emit('remove', item.id)">
+                <v-btn dark color="red" @click="$emit('remove', item)">
                     <v-icon>delete</v-icon> Удалить
                 </v-btn>
             </v-flex>
@@ -157,8 +157,8 @@
                 // error callback
             })
         },
-        show () {
-          this.dialog = true
+        show (dialog=true) {
+          this.dialog = dialog
         },
 	    close () {
           this.dialog = false
