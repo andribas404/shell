@@ -171,7 +171,7 @@
         show (dialog=true) {
           this.dialog = dialog
         },
-	    close () {
+        close () {
           this.dialog = false
         },
         confirm () {

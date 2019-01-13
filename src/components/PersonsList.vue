@@ -74,6 +74,7 @@ export default {
       var formData = this.getFormData({id: item.id})
       var name = this.getName(item)
       // POST url
+      // eslint-disable-next-line
       this.$http.post(url, formData).then(response => {
         // success callback
         var notice = 'Сотрудник ' + name + ' удален'
@@ -98,6 +99,7 @@ export default {
         this.archivePostItem(item)
       }, response => {
           // error callback
+        this.showNotice('error', 'error loading data from api' + response.status)
       })
     },
     archivePostItem (item) {
@@ -108,6 +110,7 @@ export default {
       }
       var formData = this.getFormData(item, false)
       // POST url
+      // eslint-disable-next-line
       this.$http.post(url, formData).then(response => {
         // success callback
         var notice = 'Сотрудник ' + name + ' перемещен ' + dst
@@ -143,6 +146,7 @@ export default {
       var formData = this.getFormData(item)
       var name = this.getName(item)
       // POST url
+      // eslint-disable-next-line
       this.$http.post(url, formData).then(response => {
         // success callback
         var notice = 'Сотрудник ' + name + ' успешно сохранен'
@@ -211,6 +215,7 @@ export default {
         this.items = arr
     }, response => {
         // error callback
+        this.showNotice('error', 'error loading data from api' + response.status)
     })            
   },
 
