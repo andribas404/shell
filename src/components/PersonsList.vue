@@ -3,7 +3,7 @@
     <v-layout align-center justify-center>
 
       <v-list two-line v-if="items.length">
-			  <ListItem
+        <ListItem
           v-for="item in items"
           :key="item.id"
           :item="item"
@@ -18,9 +18,14 @@
       <v-btn color="pink" dark fab bottom right fixed @click="addItem">
           <v-icon>add</v-icon>
       </v-btn>
-      <Form ref="add_form"/>
-      <Form
+      <PersonForm
+        @create="createItem"
+        @update="updateItem"
+        ref="add_form"/>
+      <PersonForm
         edit_mode
+        @create="createItem"
+        @update="updateItem"
         @remove="removeItem"
         ref="edit_form"/>
     </v-layout>
@@ -29,11 +34,11 @@
 
 <script>
 import ListItem from './ListItem'
-import Form from './Form'
+import PersonForm from './PersonForm'
 
 export default {
   components: {
-    ListItem, Form
+    ListItem, PersonForm
   },
   data: () => ({
     items: [],
@@ -54,35 +59,40 @@ export default {
     archiveItem (id) {
       console.log('archive', id)
     },
+    createItem (item) {
+      console.log('createItem', item)
+    },
+    updateItem (item) {
+      console.log('updateItem', item)
+    },
   },
   created: function () {
-      // Alias the component instance as `vm`, so that we  
-      // can access it inside the promise function
-      var vm = this
-      var url = 'http://localhost:8000/api/person'
-      // Fetch our array of dpts from an API
-      fetch(url)
-      .then(function (response) {
-          return response.json()
-      })
-      .then(function (data) {
-          var arr = []
-          var len = data.length
-          for (var i = 0; i < len; i++) {
-              var item = data[i]
-              var title = [item.first_name, item.second_name, item.last_name].join(' ')
-              var bday = item.birthday.split('-').reverse().join('.')
-              var subtitle = ['Пол:', item.sex, 'Дата рождения:', bday].join(' ')
-              arr.push({
-                  icon: 'person',
-                  iconClass: 'blue white--text',
-                  title: title,
-                  subtitle: subtitle,
-                  id: data[i].id,
-              })
-          }        
-          vm.items = arr
-      })
+    // Alias the component instance as `vm`, so that we  
+    // can access it inside the promise function
+    var vm = this
+    // Fetch our array of dpts from an API
+    this.$http.get('person').then(response => {
+        // success callback
+        var data = response.body
+        var arr = []
+        var len = data.length
+        for (var i = 0; i < len; i++) {
+            var item = data[i]
+            var title = [item.first_name, item.second_name, item.last_name].join(' ')
+            var bday = item.birthday.split('-').reverse().join('.')
+            var subtitle = ['Дата рождения:', bday].join(' ')
+            arr.push({
+                icon: 'person',
+                iconClass: 'blue white--text',
+                title: title,
+                subtitle: subtitle,
+                id: data[i].id,
+            })
+        }        
+        vm.items = arr
+    }, response => {
+        // error callback
+    })            
   },
 
 }

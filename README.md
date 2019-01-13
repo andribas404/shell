@@ -64,12 +64,11 @@ yarn run lint
 
     - прописать:
     ```
-    Form:
-        create
-        save
     PersonsList:
         removeItem (id)
         archiveItem (id)
+        createItem (item)
+        updateItem (item)
     ```
 
     - сделать фильтр по архиву в меню
@@ -78,4 +77,3 @@ yarn run lint
 
     - компоненты:
         - добавить snackbar - отображать уведомления после обращений на сервер
-        - url = localhost - изменить на относительный путь

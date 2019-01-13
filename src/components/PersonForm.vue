@@ -8,7 +8,7 @@
         <v-toolbar-title>Редактирование сотрудника</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-            <v-btn dark flat @click="save">Сохранить</v-btn>
+            <v-btn dark flat @click="$emit('update', item)">Сохранить</v-btn>
         </v-toolbar-items>
         </v-toolbar>
 
@@ -19,7 +19,7 @@
         <v-toolbar-title>Добавление сотрудника</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-toolbar-items>
-            <v-btn dark flat @click="create">Создать</v-btn>
+            <v-btn dark flat @click="$emit('create', item)">Создать</v-btn>
         </v-toolbar-items>
         </v-toolbar>
 
@@ -146,15 +146,15 @@
     methods: {
         set (id) {
             var vm = this
-            var url = 'http://localhost:8000/api/person/' + id
-            fetch(url)
-            .then(function (response) {
-                return response.json()
-            })
-            .then(function (data) {
+            var url = 'person/' + id
+            this.$http.get(url).then(response => {
+                // success callback
+                var data = response.body
                 vm.item = data
                 vm.item.dpt = data.dpt.id
                 vm.item.birthday = data.birthday.split('-').reverse().join('.')
+            }, response => {
+                // error callback
             })
         },
         show () {
@@ -163,24 +163,14 @@
 	    close () {
           this.dialog = false
         },
-        create () {
-            console.log('create dialog')
-        },
-        save () {
-            console.log('save dialog')
-        },
     },
     created: function () {
         // Alias the component instance as `vm`, so that we  
         // can access it inside the promise function
         var vm = this
-        var url = 'http://localhost:8000/api/dpt'
-        // Fetch our array of dpts from an API
-        fetch(url)
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
+        this.$http.get('dpt').then(response => {
+            // success callback
+            var data = response.body
             var arr = []
             var len = data.length
             for (var i = 0; i < len; i++) {
@@ -190,7 +180,9 @@
                 })
             }        
             vm.dpt_items = arr
-        })
+        }, response => {
+            // error callback
+        })            
     },
   }
 </script>
