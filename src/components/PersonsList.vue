@@ -88,7 +88,6 @@ export default {
       });      
     },
     archiveToggleItem (id) {
-      console.log('archiveToggleItem', id)
       var url = 'person/' + id
       this.$http.get(url).then(response => {
         // success callback
@@ -174,28 +173,24 @@ export default {
               }
     },
     showNotice (status, message) {
-      console.log('showNotice', status, message)
       this.$refs.snack.show(status, message)
     },
     refreshItem (item) {
-      console.log('refreshItem', item)
       var ind = this.items.findIndex(x => x.id === item.id)
       if (ind === -1) {
-        console.log('IndexError')
+        //console.log('IndexError')
       } else {
         this.$set(this.items, ind, this.transformItem(item))
       }
     },
     appendItem (item) {
-      console.log('appendItem', item)
       var new_item = this.transformItem(item)
       this.items.push(new_item)
     },
     popItem (item) {
-      console.log('popItem', item)
       var ind = this.items.findIndex(x => x.id === item.id)
       if (ind === -1) {
-        console.log('IndexError')
+        //console.log('IndexError')
       } else {
         this.items.splice(ind, 1)
       }
@@ -205,7 +200,6 @@ export default {
     // Fetch our array from an API
     this.$http.get('person').then(response => {
         // success callback
-        console.log('test', this.$http.options.root, response.body)
         var data = response.body
         var arr = []
         var len = data.length
