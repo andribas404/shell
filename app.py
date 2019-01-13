@@ -24,7 +24,7 @@ class Application(tornado.web.Application):
         handlers = self.get_handlers()
  
         settings = dict(
-            cookie_secret='__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__',
+            cookie_secret='474446ad24ee5490f8e879012ee2a855a7c7bf56',
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
             #xsrf_cookies=True,
@@ -42,22 +42,30 @@ class Application(tornado.web.Application):
             '{prefix}/{id}',
             '{prefix}/{id}/{action}',
         ]
+        dist_path = os.path.join(os.path.dirname(__file__), 'dist')
         return [
             (r.format(prefix=prefix, id=id_group, action=action_group), CrudHandler)
-            for r in all_routes] + [('/', MainHandler), ('/api/dpt', DptHandler)]
+            for r in all_routes] + [('/api/dpt', DptHandler),
+            ('/(.*)', MainHandler, {'path': dist_path})]
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    """Базовый обработчик запросов.
+    предоставляет доступ к ресурсам с других доменов"""
     def set_default_headers(self, *args, **kwargs):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
 
-class MainHandler(BaseHandler):
-    """Отображает главную страницу"""
-    def get(self):
-        items = ItemList.get_index()
-        self.render('index.html', items=items)
+
+class MainHandler(tornado.web.StaticFileHandler):
+    """Отображает главную страницу.
+    предоставляет доступ к папке dist"""
+    def parse_url_path(self, url_path):
+        if not url_path or url_path.endswith('/'):
+            url_path = url_path + 'index.html'
+        return url_path
+
 
 class DptHandler(BaseHandler):
     """возвращает список отделов"""
@@ -72,9 +80,7 @@ class CrudHandler(BaseHandler):
     """
     метод   путь                комментарий
     GET     {prefix}            отображает список элементов
-    GET     {prefix}/add        возвращает форму для добавления нового элемента
     GET     {prefix}/{id}	    возвращает элемент по id
-    GET     {prefix}/{id}/edit	отображает форму для редактирования элемента
     PUT     {prefix}/{id}	    обновляет значение элемента
     DELETE  {prefix}/{id}	    удаляет элемент
     POST    {prefix}            добавляет новый элемент
@@ -83,25 +89,15 @@ class CrudHandler(BaseHandler):
     """
     def get(self, item_id=None, action=None):
         """Обработка путей метода GET"""
-        if not item_id:
-            if not action:
+        if action is not None:
+            self.error404()
+        else:
+            if not item_id:
                 #GET     {prefix}            отображает список элементов
                 self.get_index()
-            elif action == 'add':
-                #GET     {prefix}/add        возвращает форму для добавления нового элемента
-                self.form_add_item()
             else:
-                self.error404()
-        else:
-            #item_id is set
-            if not action:
                 #GET     {prefix}/{id}	    возвращает элемент по id
                 self.get_item(item_id)
-            elif action == 'edit':
-                #GET     {prefix}/{id}/edit	отображает форму для редактирования элемента
-                self.form_edit_item(item_id)
-            else:
-                self.error404()
             
     def post(self, item_id=None, action=None):
         """Обработка путей метода POST"""
@@ -161,23 +157,12 @@ class CrudHandler(BaseHandler):
                 self.write({'message': 'DoesNotExist'})
             
     def error404(self):
+        """Отображение страницы с ошибкой"""
+        self.set_status(404, 'File not Found')
         self.render('404.html')
 
-    def form_add_item(self):
-        dpts = ItemList.get_dpt()
-        self.render('form.html', dpts=dpts)
-
-    def form_edit_item(self, item_id):
-        try:
-            idx = int(item_id)
-            item = ItemList.get(idx)
-            dpts = ItemList.get_dpt()
-            self.render('form.html', dpts=dpts, item=item)
-        except IndexError as err:
-            self.set_status(404, 'Item not found')
-            self.write({'message': 'DoesNotExist'})
-
     def get_index(self):
+        """Возвращает список всех сотрудников"""
         self.set_header('Content-Type', 'application/json')
         items = ItemList.get_index()
         response = json_serialize(items)
@@ -209,6 +194,7 @@ class CrudHandler(BaseHandler):
 
 
 def main():
+    """Основная петля событий"""
     tornado.options.parse_command_line()
     app = Application()
     app.listen(options.port)

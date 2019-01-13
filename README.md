@@ -32,7 +32,6 @@
   * coverage
 + rest api
 + vue
-- templates (убрать лишнее)
 - validation (валидация на сервере, экранирование)
 - CSRF
 - журналирование
