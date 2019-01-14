@@ -27,8 +27,9 @@ class Application(tornado.web.Application):
             cookie_secret='474446ad24ee5490f8e879012ee2a855a7c7bf56',
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
+            default_handler_class=My404Handler,
             #xsrf_cookies=True,
-            debug=True,
+            #debug=True,
         )
         super(Application, self).__init__(handlers, **settings)
 
@@ -49,13 +50,25 @@ class Application(tornado.web.Application):
             ('/(.*)', MainHandler, {'path': dist_path})]
 
 
+class My404Handler(tornado.web.RequestHandler):
+    """Отображение страницы с ошибкой"""
+    def prepare(self):
+        self.set_status(404, 'File not Found')
+        self.render('404.html')
+
+
 class BaseHandler(tornado.web.RequestHandler):
-    """Базовый обработчик запросов.
-    предоставляет доступ к ресурсам с других доменов"""
+    """Базовый обработчик запросов."""
     def set_default_headers(self, *args, **kwargs):
+        """предоставляет доступ к ресурсам с других доменов"""
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
+
+    def write_error(status_code, **kwargs):
+        """обработка ошибок сервера"""
+        self.set_status(status_code, 'Internal Server Error')
+        self.render('500.html', kwargs["exc_info"])
 
 
 class MainHandler(tornado.web.StaticFileHandler):
@@ -65,6 +78,11 @@ class MainHandler(tornado.web.StaticFileHandler):
         if not url_path or url_path.endswith('/'):
             url_path = url_path + 'index.html'
         return url_path
+
+    def write_error(status_code, **kwargs):
+        """обработка ошибок сервера"""
+        self.set_status(status_code, 'Internal Server Error')
+        self.render('500.html', kwargs["exc_info"])
 
 
 class DptHandler(BaseHandler):

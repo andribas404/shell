@@ -24,40 +24,19 @@
 
 В качестве frontend'а одна страница на jQuery или Vue (предпочтительней).
 
-### Project setup
+### Запуск веб-сервера Tornado
+```
+pip install -r requirements.txt
+python app.py --port=$PORT
+```
+
+### Повторная сборка фронтенда
 ```
 yarn install
-```
-
-#### Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
-#### Compiles and minifies for production
-```
 yarn run build
 ```
 
-#### Run your tests
+### Запуск фронтенда в режиме разработки
 ```
-yarn run test
+yarn run serve
 ```
-
-#### Lints and fixes files
-```
-yarn run lint
-```
-
-## TODO:
-- test
-  * selenium,
-  * tornado testcase,
-  * pytest,
-  * coverage
-- validation (валидация на сервере)
-- CSRF
-- журналирование
-- документация (сгенерировать по doc классов)
-- фронтенд:
-    - date picker

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Error{% end %}
+{% block content %}
+    <pre>
+        type = {{ message[0] }}
+        value = {{ message[1] }}
+    </pre>
+{% end %}
