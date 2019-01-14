@@ -67,7 +67,6 @@
                 <v-text-field
                     v-model="item.birthday"
                     :rules="fieldRules"
-                    mask="##.##.####"
                     label="Дата рождения"
                     required
                 ></v-text-field>

@@ -163,9 +163,12 @@ export default {
     getName (item) {
       return [item.first_name, item.second_name, item.last_name].join(' ')
     },
-    transformItem (item) {
+    transformItem (item, reverse_birthday=true) {
       var title = this.getName(item)
-      var bday = item.birthday.split('-').reverse().join('.')
+      var bday = item.birthday
+      if (reverse_birthday) {
+        bday = bday.split('-').reverse().join('.')
+      }
       var subtitle = ['Дата рождения:', bday].join(' ')
       return {
                 icon: 'person',
@@ -184,11 +187,11 @@ export default {
       if (ind === -1) {
         //console.log('IndexError')
       } else {
-        this.$set(this.items, ind, this.transformItem(item))
+        this.$set(this.items, ind, this.transformItem(item, false))
       }
     },
     appendItem (item) {
-      var new_item = this.transformItem(item)
+      var new_item = this.transformItem(item, false)
       this.items.push(new_item)
     },
     popItem (item) {
