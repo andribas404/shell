@@ -136,9 +136,8 @@ class ItemList:
         элемент приходит в виде словаря"""
         try:
             fields = 'first_name second_name last_name birthday sex position dpt is_archive'.split()
+            item = ItemList.validate(item)
             d = {key:item[key] for key in fields if key in item}
-            if 'is_archive' in d:
-                d['is_archive'] = True if d['is_archive'] == 'true' else False
             p = Person.create(**d)
             return model_to_dict(p)
         except IntegrityError as err:
@@ -165,9 +164,7 @@ class ItemList:
     def update(id, item):
         """обновляет значение полей элемента с заданным id"""
         try:
-            if 'is_archive' in item:
-                item['is_archive'] = True if item['is_archive'] == 'true' else False
-
+            item = ItemList.validate(item)
             p = Person.get_by_id(id)
             for key,v in item.items():
                 if getattr(p, key) != v: 
@@ -181,3 +178,22 @@ class ItemList:
             raise err
         except OutdatedError as err:
             raise err
+
+    @staticmethod
+    def validate(item):
+        """проверяет корректоность введенных данных"""
+        if 'is_archive' in item:
+            val = item['is_archive'].lower()
+            if val not in ('true', 'false'):
+                raise IntegrityError('invalid input is_archive not Boolean')
+            item['is_archive'] = True if val == 'true' else False
+        if 'sex' in item:
+            if item['sex'] not in (x[0] for x in Person.SEX_CHOICES):
+                raise IntegrityError('invalid input sex incorrect')
+        if 'birthday' in item:
+            val = item['birthday']
+            try:
+                datetime.datetime.strptime(val, '%Y-%m-%d')
+            except ValueError:
+                raise IntegrityError("Incorrect data format, should be YYYY-MM-DD")
+        return item

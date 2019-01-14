@@ -144,10 +144,10 @@ class CrudHandler(BaseHandler):
                 self.write({'message': 'DoesNotExist'})
             except IntegrityError as err:
                 self.set_status(405, 'Validation Exception')
-                self.write({'message': 'DoesNotExist'})
+                self.write({'message': 'Validation Exception'})
             except OutdatedError as err:
                 self.set_status(400, 'Item is outdated')
-                self.write({'message': 'DoesNotExist'})
+                self.write({'message': 'Item is outdated'})
 
     def delete(self, item_id, action=None):
         """Обработка путей метода DELETE"""
