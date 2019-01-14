@@ -115,7 +115,13 @@ export default {
         // success callback
         var notice = 'Сотрудник ' + name + ' перемещен ' + dst
         this.showNotice('success', notice)
-        this.refreshItem(item)
+        var ind = this.items.findIndex(x => x.id === item.id)
+        if (ind === -1) {
+          //console.log('IndexError')
+        } else {
+          this.$set(this.items, ind, this.transformItem(item))
+        }
+
       }, response => {
         // error callback
         var notice = 'Ошибка перемещения сотрудника ' + name + ' ' + dst + '. Причина: ' + response.body.message
