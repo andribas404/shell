@@ -65,11 +65,6 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS")
 
-    def write_error(status_code, **kwargs):
-        """обработка ошибок сервера"""
-        self.set_status(status_code, 'Internal Server Error')
-        self.render('500.html', kwargs["exc_info"])
-
 
 class MainHandler(tornado.web.StaticFileHandler):
     """Отображает главную страницу.
@@ -78,11 +73,6 @@ class MainHandler(tornado.web.StaticFileHandler):
         if not url_path or url_path.endswith('/'):
             url_path = url_path + 'index.html'
         return url_path
-
-    def write_error(status_code, **kwargs):
-        """обработка ошибок сервера"""
-        self.set_status(status_code, 'Internal Server Error')
-        self.render('500.html', kwargs["exc_info"])
 
 
 class DptHandler(BaseHandler):
